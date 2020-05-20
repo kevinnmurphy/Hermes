@@ -1,12 +1,12 @@
 #interacts with user
 #puts and gets statements go here
 #controls flow
-class CLI
+class Hermes::CLI
 
     @@Base_url = ""
 
     def run
-        puts "Welcome"
+        puts "Welcome to the Trail Runner App!"
         #make_trails
         #add_attributes_to_trails
         #display_trails

@@ -3,3 +3,4 @@
 require_relative '../lib/hermes'
 
 Hermes::CLI.new.run
+

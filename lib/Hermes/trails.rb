@@ -1,4 +1,4 @@
-class Trail
+class Hermes::Trail
     attr_accessor :name, :location, :length, :difficulty, :ascent
 
     @@all = []

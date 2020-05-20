@@ -21,8 +21,9 @@ Or install it yourself as:
     $ gem install Hermes
 
 ## Usage
+Type the blow and follow on screen prompts:
 
-TODO: Write usage instructions here
+    bin/hermes
 
 ## Development
 
