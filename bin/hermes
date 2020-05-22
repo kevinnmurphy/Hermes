@@ -2,5 +2,7 @@
 
 require_relative '../lib/environment'
 
-Hermes::CLI.new.run
+#Hermes::CLI.new.run
 
+cli_instance = CLI.new
+cli_instance.run
