@@ -1,29 +1,40 @@
 class API
     attr_accessor :lat, :lon
 
-    @trails_api_key = ENV[TRAILS_API_KEY]
+    #ENV[TRAILS_API_KEY]
 
-    def initialize(lat:, lon:)
-        @lat = lat
-        @lon = lon
+    def initialize(attributes)
+        attributes.each {|key, value| self.send(("#{key}="), value)}
+    end
+
+    def self.get_JSON_from_url(url)
+        uri = URI.parse(url)
+        response = Net::HTTP.get_response(uri)
+        JSON.parse(response.body)
     end
 
     #def self.fetch_trails(lat:, lon:)
-    def self.fetch_trails
-        trails_api_key =
-        #lat = "40.0274" #boulder, co
-        #lon = "-105.2519"
-        lat = "34.1065" #sugar hill, ga
-        lon = "-84.0335" #convert input to negative for US
-        max_distance = "15"
-        url = "https://www.trailrunproject.com/data/get-trails?lat=#{lat}&lon=#{lon}&maxDistance=#{max_distance}&key=#{trails_api_key}"
-        uri = URI(url)
-        response = Net::HTTP.get(uri)
-        hash = JSON.parse(response)
-        #binding.pry
-        ## -- ENABLE/DISABLE THIS TO TOGGLE BETWEEN API AND HARDCODE PULL -- ##
-        #array_of_trails = hash["trails"]
+    def self.fetch_trails(lat = "40.0274", lon = "105.2519")
+        ##########################################################################################
+        ##########################################################################################
+
+        # trails_api_key = "200766598-390ae1fea2810ed4dd1e179f968e4914"
+        # #convert lon input to negative for US
+        # max_distance = "15"
+        # url = "https://www.trailrunproject.com/data/get-trails?lat=#{lat}&lon=#{-lon}&maxDistance=#{max_distance}&key=#{trails_api_key}"
+        # hash = get_JSON_from_url(url)
+        # #binding.pry
+        # array_of_trails = hash["trails"]
+
+        ##########################################################################################
+        ## -- SWITCH COMMENT TO TOGGLE BETWEEN API AND HARDCODE PULL -- ##
+        ##########################################################################################
+
+        url = "https://www.google.com/"
         array_of_trails = @@hash_info["trails"]
+
+        ##########################################################################################
+        ##########################################################################################
 
         array_of_trails.each do |trail_hash| 
             #trail_instance = Trail.new(id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location", length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]]) 
@@ -42,14 +53,28 @@ class API
         #binding.pry
     end
 
+    def self.fetch_drinks(ingredient)
+        url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingredient}"
+        uri = URI(url)
+        response = Net::HTTP.get(uri)
+        begin
+            drinks = JSON.parse(response)["drinks"].each do |c|
+                Drink.new(name: c["strDrink"], id: c["idDrink"], ingredient: ingredient) if c["strDrink"] != nil
+            end
+        rescue
+             return false
+        end
+        # true
+    end
+    
     def saved_trails
 
     end
 
-
     def self.scrape_trails
 
     end
+
 
 #trails = API.new.fetch_trails
 #puts trails
