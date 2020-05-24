@@ -72,7 +72,19 @@ class API
         #binding.pry
     end
 
-
+    def self.fetch_drinks(ingredient)
+        url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingredient}"
+        uri = URI(url)
+        response = Net::HTTP.get(uri)
+        begin
+            drinks = JSON.parse(response)["drinks"].each do |c|
+                Drink.new(name: c["strDrink"], id: c["idDrink"], ingredient: ingredient) if c["strDrink"] != nil
+            end
+        rescue
+             return false
+        end
+        # true
+    end
     
     def saved_trails
 
