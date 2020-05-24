@@ -17,13 +17,15 @@ require 'dotenv/load'
 
 
 # require relative paths
+require_relative './concerns/memorable'
 require_relative './hermes/version'
 require_relative './hermes/cli'
 require_relative './hermes/api'
 require_relative './hermes/trails'
-require_relative './concerns/memorable'
+require_relative './hermes/locations'
 
-#require_relative "./lib/hermes/location"
+
+
 #require_relative "./lib/hermes/weather"
 
 module Hermes

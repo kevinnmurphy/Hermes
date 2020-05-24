@@ -13,15 +13,32 @@ class API
         JSON.parse(response.body)
     end
 
-    #def self.fetch_trails(lat:, lon:)
-    def self.fetch_trails(lat = "40.0274", lon = "105.2519")
-        ##########################################################################################
-        ##########################################################################################
+    def self.fetch_location
+        #ip api
+        ip_api_key = 
+        ############################### >>
 
-        # trails_api_key = "200766598-390ae1fea2810ed4dd1e179f968e4914"
-        # #convert lon input to negative for US
+        # url =  "http://api.ipstack.com/check?access_key=#{ip_api_key}"
+        # ip_hash = get_JSON_from_url(url)
+        
+        ######  TEST DATA TOGGLE ######
+
+        url = "https://www.google.com/"
+        ip_hash = @@ip_hash_info
+
+        ############################### <<
+
+
+        location_instance = Location.new(ip: ip_hash["ip"], auto_latitude: ip_hash["latitude"], auto_longitude: ip_hash["longitude"])
+    end
+
+    #def self.fetch_trails(lat:, lon:)
+    def self.fetch_trails(lat = "40.0274", lon = "-105.2519")
+        ########################################################################################## >>
+
+        # trails_api_key = 
         # max_distance = "15"
-        # url = "https://www.trailrunproject.com/data/get-trails?lat=#{lat}&lon=#{-lon}&maxDistance=#{max_distance}&key=#{trails_api_key}"
+        # url = "https://www.trailrunproject.com/data/get-trails?lat=#{lat}&lon=#{lon}&maxDistance=#{max_distance}&key=#{trails_api_key}"
         # hash = get_JSON_from_url(url)
         # #binding.pry
         # array_of_trails = hash["trails"]
@@ -31,14 +48,15 @@ class API
         ##########################################################################################
 
         url = "https://www.google.com/"
-        array_of_trails = @@hash_info["trails"]
+        array_of_trails = @@trail_hash_info["trails"]
 
-        ##########################################################################################
-        ##########################################################################################
+        ########################################################################################## <<
 
         array_of_trails.each do |trail_hash| 
-            #trail_instance = Trail.new(id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location", length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]]) 
-            #trail_instance = Trail.new(trail_hash)
+            # trail_instance = Trail.new(id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location", length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]]) 
+            # trail_instance = Trail.new(trail_hash)
+
+            #WORKING
             trail_instance = Trail.new(id: trail_hash["id"])
             trail_instance.id = trail_hash["id"]
             trail_instance.name = trail_hash["name"]
@@ -78,7 +96,21 @@ class API
 
 #trails = API.new.fetch_trails
 #puts trails
-@@hash_info = {"trails"=>
+@@ip_hash_info = {"ip"=>"76.204.101.10",
+    "type"=>"ipv4",
+    "continent_code"=>"NA",
+    "continent_name"=>"North America",
+    "country_code"=>"US",
+    "country_name"=>"United States",
+    "region_code"=>"GA",
+    "region_name"=>"Georgia",
+    "city"=>"Sugar Hill",
+    "zip"=>"30519",
+    "latitude"=>34.09321975708008,
+    "longitude"=>-83.93594360351562,
+}
+
+@@trail_hash_info = {"trails"=>
     [{"id"=>7003363,
       "name"=>"Indian Seats Loop",
       "type"=>"Run",
