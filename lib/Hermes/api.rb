@@ -15,7 +15,8 @@ class API
 
     def self.fetch_location
         #ip api
-        ip_api_key = 
+        ip_api_key = "026d64c0e7e0120c12297098ce83f4ef"
+
         ############################### >>
 
         # url =  "http://api.ipstack.com/check?access_key=#{ip_api_key}"
@@ -36,7 +37,7 @@ class API
     def self.fetch_trails(lat = "40.0274", lon = "-105.2519")
         ########################################################################################## >>
 
-        # trails_api_key = 
+        # trails_api_key = "200766598-390ae1fea2810ed4dd1e179f968e4914"
         # max_distance = "15"
         # url = "https://www.trailrunproject.com/data/get-trails?lat=#{lat}&lon=#{lon}&maxDistance=#{max_distance}&key=#{trails_api_key}"
         # hash = get_JSON_from_url(url)
@@ -71,19 +72,7 @@ class API
         #binding.pry
     end
 
-    def self.fetch_drinks(ingredient)
-        url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingredient}"
-        uri = URI(url)
-        response = Net::HTTP.get(uri)
-        begin
-            drinks = JSON.parse(response)["drinks"].each do |c|
-                Drink.new(name: c["strDrink"], id: c["idDrink"], ingredient: ingredient) if c["strDrink"] != nil
-            end
-        rescue
-             return false
-        end
-        # true
-    end
+
     
     def saved_trails
 
