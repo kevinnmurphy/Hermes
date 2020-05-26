@@ -6,6 +6,7 @@ class Trail
     include Memorable::InstanceMethods
 
     @@all = []
+    @@sorted = []
 
     def initialize(attributes)
         attributes.each {|key, value| self.send(("#{key}="), value)}
@@ -15,6 +16,14 @@ class Trail
         @@all
     end
 
+    def self.sorted
+        @@sorted
+    end
+
+    def self.sorted_clear
+        @@sorted.clear 
+    end
+
     def self.exists?(index)
         (1..all.length).include?(index.to_i)
     end
@@ -22,6 +31,7 @@ class Trail
     def self.create_by_id(id)
         trail = Trail.new(id)
         trail.save
+        sorted << trail
         trail
     end
 
@@ -33,22 +43,8 @@ class Trail
         find_by_id(id) || create_by_id(id)
     end
 
-    def list_trails_by_name
-        puts "Please enter the name of a trail:"
-        input = gets.chomp
-        
-        if trail = Trail.find_by_name(input)
-          sorted_trails = artist.trails.sort_by {|trail| trail.name}
-          sorted_trails.each.with_index {|trail, index| puts "#{index + 1}. #{trail.name}"}
-        end
-      end
-
     def self.all_by_difficulty(difficulty)
         self.all.select{|trail| trail.difficulty.downcase == difficulty.downcase}
     end
-
-    # def add_trail_attributes(trail_attributes_hash)
-    #     trail_attributes_hash.each_pair {|key, value| self.send("#{key}=", value)}
-    # end
 
 end

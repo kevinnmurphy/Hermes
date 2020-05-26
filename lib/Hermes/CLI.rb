@@ -28,11 +28,10 @@ class CLI
             puts "Or type \'refine\' to search trails by: nearest, difficulty, popularity, ascent, or length."
             input = nil
             input = gets.strip.downcase
-            input_limit = Trail.all.length
+            input_limit = Trail.sorted.length
             #validate
 
             if input.to_i.between?(1, input_limit)
-                #list available trail info
                 display_trail_info(input)
             elsif input == "list"
                 list_trails 
@@ -41,13 +40,9 @@ class CLI
                 puts "Type to sort by: Name, Difficulty, Popular, Length, or Ascent."
                 input = gets.strip.downcase
                 if input == "popular"
-                    list_trails
-                elsif input == "name"
-                    sort_by_param_and_name(input)
-                elsif input == "length"
-                    sort_by_param_and_name(input)
-                elsif input == "ascent"
-                    sort_by_param_and_name(input)
+                    sort_by_popular
+                elsif input == "name" || input == "length" || input == "ascent"
+                    sort_by_param(input)
                 elsif input == "difficulty"
                     search_by_difficulty
                 else
@@ -103,6 +98,7 @@ class CLI
         valid_ending_count = make_four.to_s.split(".")[1].to_s.length
         coord if valid_beginning_count.between?(1, 3) && valid_limit  && valid_ending_count == 4    
     end
+
     def validate_lon_cords(coord)
         make_four = "%.4f" % coord.to_f
         valid_beginning_count = coord.to_s.split(".")[0].to_s.length
@@ -128,7 +124,7 @@ class CLI
     end 
 
     def get_lon_input
-        puts "Longitude please: ex. -105.2519" 
+        puts "Longitude please: ex. -105.2519 Lon is negative in the US" 
         input = gets.chomp
         if validate_lon_cords(input) 
             return input.to_f
@@ -144,33 +140,24 @@ class CLI
 
     def list_trails
         puts "\nPopular trails nearby:"
-        @trails = Trail.all[0..9]
-        @trails.each.with_index(1) do |trail, i|
+        trails = Trail.sorted[0..9]
+        trails.each.with_index(1) do |trail, i|
         puts "#{i}. #{trail.name} - #{trail.location}"
         end
     end
 
-    def get_trail(input, limit)
-        index = input.to_i - 1
-        trail_selection = Trail.all[index]
-        display_trail_info(trail_selection)
-    end 
-
     def display_trail_info(input)
         if Trail.all.empty?
-            Puts "Sorry, no trail information found, please try another location."
+            Puts "\nSorry, no trail information found, please try another location."
         else
-            trail_index = @trails[input.to_i-1]
-            puts "Trail: #{trail_index.name} - City: #{trail_index.location} - Dificulty: #{trail_index.difficulty}"
+            trail_index = Trail.sorted[input.to_i-1]
+            puts "\nTrail: #{trail_index.name} - City: #{trail_index.location} - Dificulty: #{trail_index.difficulty}"
             puts "Length: #{trail_index.length} mi - Ascent: #{trail_index.ascent} ft - Descent: #{trail_index.descent} ft"
             puts "\"#{trail_index.summary}\""
         end
     end
 
 ######## SORTING  ########
-
-    #Trail.all.sort {|a,b| a.name <=> b.name}
-    #Trail.all.sort_by {|trail| trail.name}
 
     def search_by_difficulty
         puts "Which difficulty would you like to search for? (green, blue, black)"
@@ -193,11 +180,19 @@ class CLI
         end
     end
 
-    def sort_by_param_and_name(property)
-        # sorted = Trail.all.sort{|a,b| a.length <=> b.length}
-        sorted = Trail.all.sort_by {|k,v| k.property}
-        # sorted = Trail.all.sort_by { |i| [i[:length], i[:name]] }
+    def sort_by_param(property)
+        sorted = Trail.all.sort_by {|k| k.send(property)}
         sorted[0..9].each.with_index(1) do |trail, i|
+        puts "#{i}. #{trail.name} - #{trail.location}"
+        end
+        Trail.sorted << sorted
+        Trail.sorted
+    end
+
+    def sort_by_popular
+        puts "\nPopular trails nearby:"
+        trails = Trail.all[0..9]       
+        trails.each.with_index(1) do |trail, i|
         puts "#{i}. #{trail.name} - #{trail.location}"
         end
     end
