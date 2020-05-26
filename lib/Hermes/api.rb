@@ -1,5 +1,7 @@
 class API
     attr_accessor :lat, :lon
+    extend Memorable::ClassMethods
+    include Memorable::InstanceMethods
 
     #ENV[TRAILS_API_KEY]
 
@@ -35,6 +37,8 @@ class API
     #def self.fetch_trails(lat:, lon:)
     def self.fetch_trails(lat = "40.0274", lon = "-105.2519")
         ########################################################################################## >>
+
+            ##Add more trails to query, limit trails returned to print
 
         # trails_api_key = "200766598-390ae1fea2810ed4dd1e179f968e4914"
         # max_distance = "15"

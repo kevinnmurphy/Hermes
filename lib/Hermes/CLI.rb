@@ -1,9 +1,10 @@
 
 ##TODO  
-#Find or create by mods
 #call them when fetching
 #grab 20 results, only show 10
 #fix sorting
+#clean up extra methods and make a video
+#submit
 
 
 class CLI
@@ -49,17 +50,21 @@ class CLI
                 list_trails 
             elsif input == "refine"
                 #sort trails by verious attributes
+                puts "Type to sort by: Popular, Nearest, Length, Ascent, or Difficulty."
+                input = gets.strip.downcase
+                if input == "popular"
 
-                #popularity
+                elsif input == "nearest"
 
-                #nearest
+                elsif input == "length"
 
-                #length
+                elsif input == "ascent"
 
-                #ascent
+                elsif input == "difficulty"
+                  search_by_difficulty
+                else
+                    puts "Please try another input command."
 
-                #difficulty
-                #search_by_difficulty
             elsif input == "exit"
                 goodbye
             else
