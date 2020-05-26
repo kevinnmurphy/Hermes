@@ -29,7 +29,6 @@ class API
 
         ############################### <<
 
-
         location_instance = Location.new(ip: ip_hash["ip"], auto_latitude: ip_hash["latitude"], auto_longitude: ip_hash["longitude"])
     end
 
@@ -54,38 +53,13 @@ class API
         ########################################################################################## <<
 
         array_of_trails.each do |trail_hash| 
-            # trail_instance = Trail.new(id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location", length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]]) 
-            # trail_instance = Trail.new(trail_hash)
+            trail_instance = Trail.new({id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location"], length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]}) 
 
-            #WORKING
-            trail_instance = Trail.new(id: trail_hash["id"])
-            trail_instance.id = trail_hash["id"]
-            trail_instance.name = trail_hash["name"]
-            trail_instance.location = trail_hash["location"] 
-            trail_instance.length = trail_hash["length"] 
-            trail_instance.difficulty = trail_hash["difficulty"]
-            trail_instance.ascent = trail_hash["ascent"]
-            trail_instance.descent = trail_hash["descent"]
-            trail_instance.summary = trail_hash["summary"]
-            trail_instance.url = trail_hash["url"]
         end
         #binding.pry
     end
 
-    def self.fetch_drinks(ingredient)
-        url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingredient}"
-        uri = URI(url)
-        response = Net::HTTP.get(uri)
-        begin
-            drinks = JSON.parse(response)["drinks"].each do |c|
-                Drink.new(name: c["strDrink"], id: c["idDrink"], ingredient: ingredient) if c["strDrink"] != nil
-            end
-        rescue
-             return false
-        end
-        # true
-    end
-    
+
     def saved_trails
 
     end
