@@ -10,12 +10,20 @@ module Memorable
             self.all.clear
         end
 
-        def self.create_by_id
-            trail = Trail.new(id)
-            trail.save
-            trail
+        def self.find_by_id(id)
+            self.all.detect {|item| item.id == id}
         end
 
+        def self.create_by_id(id)
+            inst = self.new(id)
+            inst.save
+            inst
+        end
+
+        def self.find_or_create_by_id(id)
+            find_by_id(id) || create(id)
+        end
+          
     end
 
 
@@ -23,14 +31,6 @@ module Memorable
 
         def save
             self.class.all << self
-        end
-
-        def find_by_id(id)
-            self.all.detect {|trail| trail.id == id}
-        end
-          
-        def find_or_create_by_id(id)
-            find_by_id(id) || create(id)
         end
 
     end

@@ -1,24 +1,15 @@
 
-##TODO  
-#call them when fetching
-#grab 20 results, only show 10
-#fix sorting
-#clean up extra methods and make a video
-#submit
-
-
 class CLI
 
 
     def run
         greeting        
-        #get_location
-        get_location_test
+        get_location
         menu
     end
 
     def greeting
-        puts "Welcome to the Trail Runner App!"
+        puts "\nWelcome to the Trail Runner App!"
     end
 
     def goodbye
@@ -32,9 +23,7 @@ class CLI
             list_trails
         while input != "exit"
 
-            
-
-            puts "Enter \'list\' to view nearby trails, or type \'exit\' to leave at any time."
+            puts "\nEnter \'list\' to view nearby trails, or type \'exit\' to leave at any time."
             puts "Or enter the trail number you would like to know more about."
             puts "Or type \'refine\' to search trails by: nearest, difficulty, popularity, ascent, or length."
             input = nil
@@ -46,62 +35,50 @@ class CLI
                 #list available trail info
                 display_trail_info(input)
             elsif input == "list"
-                puts "Nearby Trails:"
                 list_trails 
             elsif input == "refine"
                 #sort trails by verious attributes
-                puts "Type to sort by: Popular, Nearest, Length, Ascent, or Difficulty."
+                puts "Type to sort by: Name, Difficulty, Popular, Length, or Ascent."
                 input = gets.strip.downcase
                 if input == "popular"
-
-                elsif input == "nearest"
-
+                    list_trails
+                elsif input == "name"
+                    sort_by_param_and_name(input)
                 elsif input == "length"
-
+                    sort_by_param_and_name(input)
                 elsif input == "ascent"
-
+                    sort_by_param_and_name(input)
                 elsif input == "difficulty"
-                  search_by_difficulty
+                    search_by_difficulty
                 else
                     puts "Please try another input command."
-
+                end
             elsif input == "exit"
                 goodbye
             else
-                puts "Not sure what you want, type list or exit."
+                puts "\nNot sure what you want, type list or exit."
             end
         end
     end
 
+######## LOCATION ########
+
     def get_location
-        puts "To manually put in your location type \'manual\', or type \'auto\' for auto" 
+        puts "\nTo manually put in your location type \'manual\', or type \'auto\' for auto-magic" 
         input = gets.strip.chomp
         if input == "manual"
             lat = get_lat_input
             lon = get_lon_input
             API.fetch_trails(lat, lon)
-            if Trail.all.empty?
-                puts "Sorry no trail data found in selected area, please try another location./n"
-                get_location
-            end
+            check_data
         elsif input == "exit"
             exit
         elsif input == "auto"
             auto_location
         else
-            puts "Please try again."
+            puts "\nPlease try again."
             get_location
         end
-    end
-
-    def get_location_test
-            #lat = get_lat_input
-            #lon = get_lon_input
-            ## lat = 40.0274 #boulder, co
-            ## lon = 105.2519
-            lat = 34.1065 #sugar hill, ga
-            lon = 84.0335 #convert input to negative for US
-            API.fetch_trails(lat, lon)
     end
 
     def auto_location
@@ -109,16 +86,16 @@ class CLI
         auto_lat = ip.auto_latitude.truncate(4)
         auto_lon = ip.auto_longitude.truncate(4)
         API.fetch_trails(auto_lat, auto_lon)
+        check_data
+    end
+
+    def check_data
         if Trail.all.empty?
-            puts "Sorry no trail data found in your area, please try another location."
+            puts "\nSorry no trail data found in selected area, please try another location."
             get_location
         end
     end
 
-
-        ##Should I truncate input instead of limiting ending count?
-        #input.truncate(4)
-        ##Is there a way to combine these?
     def validate_lat_cords(coord)
         make_four = "%.4f" % coord.to_f
         valid_beginning_count = coord.to_s.split(".")[0].to_s.length
@@ -166,9 +143,10 @@ class CLI
     end 
 
     def list_trails
-        @trails = Trail.all
+        puts "\nPopular trails nearby:"
+        @trails = Trail.all[0..9]
         @trails.each.with_index(1) do |trail, i|
-            puts "#{i}. #{trail.name} - #{trail.location}"
+        puts "#{i}. #{trail.name} - #{trail.location}"
         end
     end
 
@@ -180,8 +158,7 @@ class CLI
 
     def display_trail_info(input)
         if Trail.all.empty?
-            Puts "Sorry, no trail information found, please try another location. /n"
-            #get_location
+            Puts "Sorry, no trail information found, please try another location."
         else
             trail_index = @trails[input.to_i-1]
             puts "Trail: #{trail_index.name} - City: #{trail_index.location} - Dificulty: #{trail_index.difficulty}"
@@ -190,92 +167,39 @@ class CLI
         end
     end
 
-### SORTING BY PARAMS  ###
+######## SORTING  ########
 
     #Trail.all.sort {|a,b| a.name <=> b.name}
     #Trail.all.sort_by {|trail| trail.name}
 
-    # input_limit = Trail.all.length
-    #validate
-    # puts "Enter the trail number you would like to know more about,
-    # if input.to_i.between?(1, input_limit)
-    #     #list available trail info
-    #     display_trail_info(input)
-
-    # def select_trail(input)
-    #     puts "Enter the trail number you would like to know more about."
-    #     if input.to_i.between?(1, input_limit)
-    #         #list available trail info
-    #         display_trail_info(input)
-
-    #         # unless valid_selection(trail_input)
-    #         #     puts "Invalid input. Let's try again."
-    #         #     select_trail
-    #         #   end
-          
-    #         #   if input == "search"
-    #         #     get_search
-    #         #     make_new_trails_list
-    #         #     select_trail
-    #         #   elsif trail_input == "new"
-    #         #     make_new_trails_list
-    #         #     select_trail
-    #         #   else 
-    #         #     get_trail(trail_input)
-    #         #   end 
-    #     end
-    # end
-
-    def display_by_search(filter)
-        Trail.all_by_filter
-    end
-
     def search_by_difficulty
-        puts "Which difficulty would you like to search for? (blue, blue/black, black)"
-        difficulty = gets.strip
-        success = API.fetch_trails(difficulty)
+        puts "Which difficulty would you like to search for? (green, blue, black)"
+        difficulty = gets.strip.downcase
+        success = Trail.all_by_difficulty(difficulty).length > 0
         if success
             puts "Here are all the trails with difficulty: #{difficulty}"
             list_by_difficulty(difficulty)
+        elsif input == "exit"
+            exit
         else
             puts "Sorry! We don't have that difficulty in our system, try green, blue, or black"
             search_by_difficulty
         end
     end
 
-    def list_by_difficulty(difficulty)
-        Trail.all_by_difficulty(difficulty).each.with_index(1) do |trail, i|
+    def list_by_difficulty(dif)
+        Trail.all_by_difficulty(dif).each.with_index(1) do |trail, i|
             puts "#{i}. #{trail.name}"
         end
     end
 
-
-    def sort_by_param_and_name(sort)
-        @trails = Trail.all
-        #@trails.sort_by {|k,v| v[0]}
-        items.sort_by { |i| [i[:length], i[:name]] }
-
-        #Trail.all.sort{|a,b| a.name <=> b.name}
+    def sort_by_param_and_name(property)
+        # sorted = Trail.all.sort{|a,b| a.length <=> b.length}
+        sorted = Trail.all.sort_by {|k,v| k.property}
+        # sorted = Trail.all.sort_by { |i| [i[:length], i[:name]] }
+        sorted[0..9].each.with_index(1) do |trail, i|
+        puts "#{i}. #{trail.name} - #{trail.location}"
+        end
     end
 
-
-
-    # def loop_menu
-    #     loop do
-    #         puts ...
-    #         input =
-    #     gets.strip.chomp.downcase
-    #         case input
-    #         .
-    #         .
-    #         .
-    #         when  "exit"
-    #             break
-    #         else
-    #             .
-    #             .
-    #         end
-    #     end
-    # end
-   
 end
