@@ -25,7 +25,7 @@ class CLI
 
             puts "\nEnter \'list\' to view nearby trails, or type \'exit\' to leave at any time."
             puts "Or enter the trail number you would like to know more about."
-            puts "Or type \'refine\' to search trails by: nearest, difficulty, popularity, ascent, or length."
+            puts "Or type \'refine\' to search trails with filters."
             input = nil
             input = gets.strip.downcase
             input_limit = Trail.sorted.length
@@ -175,25 +175,36 @@ class CLI
     end
 
     def list_by_difficulty(dif)
-        Trail.all_by_difficulty(dif).each.with_index(1) do |trail, i|
-            puts "#{i}. #{trail.name}"
+        Trail.sorted_clear
+        sorted = Trail.all_by_difficulty(dif)
+
+        sorted[0..9].each.with_index(1) do |trail, i|
+            puts "#{i}. #{trail.name} - #{trail.location}"
+        end
+        sorted[0..9].each do |trail| Trail.sorted << trail
         end
     end
 
     def sort_by_param(property)
+        Trail.sorted_clear
+
         sorted = Trail.all.sort_by {|k| k.send(property)}
         sorted[0..9].each.with_index(1) do |trail, i|
         puts "#{i}. #{trail.name} - #{trail.location}"
         end
-        Trail.sorted << sorted
-        Trail.sorted
+
+        sorted[0..9].each do |trail| Trail.sorted << trail
+        end
     end
 
     def sort_by_popular
         puts "\nPopular trails nearby:"
-        trails = Trail.all[0..9]       
-        trails.each.with_index(1) do |trail, i|
+        Trail.sorted_clear
+        sorted = Trail.all[0..9]     
+        sorted[0..9].each.with_index(1) do |trail, i|
         puts "#{i}. #{trail.name} - #{trail.location}"
+        end
+        sorted[0..9].each do |trail| Trail.sorted << trail
         end
     end
 
