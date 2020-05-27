@@ -37,7 +37,7 @@ class CLI
                 list_trails 
             elsif input == "refine"
                 #sort trails by verious attributes
-                puts "Type to sort by: Name, Difficulty, Popular, Length, or Ascent."
+                puts "\nType to sort by: Name, Difficulty, Popular, Length, or Ascent."
                 input = gets.strip.downcase
                 if input == "popular"
                     sort_by_popular
@@ -139,7 +139,7 @@ class CLI
     end 
 
     def list_trails
-        puts "\nPopular trails nearby:"
+        puts "\nTrails:"
         trails = Trail.sorted[0..9]
         trails.each.with_index(1) do |trail, i|
         puts "#{i}. #{trail.name} - #{trail.location}"
@@ -160,11 +160,11 @@ class CLI
 ######## SORTING  ########
 
     def search_by_difficulty
-        puts "Which difficulty would you like to search for? (green, blue, black)"
+        puts "\nWhich difficulty would you like to search for? (green, blue, black)"
         difficulty = gets.strip.downcase
         success = Trail.all_by_difficulty(difficulty).length > 0
         if success
-            puts "Here are all the trails with difficulty: #{difficulty}"
+            puts "\nHere are all the trails with difficulty: #{difficulty}"
             list_by_difficulty(difficulty)
         elsif input == "exit"
             exit
@@ -175,9 +175,11 @@ class CLI
     end
 
     def list_by_difficulty(dif)
-        Trail.sorted_clear
-        sorted = Trail.all_by_difficulty(dif)
+        puts "Trails by Difficulty:"
 
+        Trail.sorted_clear
+
+        sorted = Trail.all_by_difficulty(dif)
         sorted[0..9].each.with_index(1) do |trail, i|
             puts "#{i}. #{trail.name} - #{trail.location}"
         end
@@ -186,6 +188,8 @@ class CLI
     end
 
     def sort_by_param(property)
+        puts "Trails by #{property.capitalize}:"
+
         Trail.sorted_clear
 
         sorted = Trail.all.sort_by {|k| k.send(property)}
@@ -198,7 +202,7 @@ class CLI
     end
 
     def sort_by_popular
-        puts "\nPopular trails nearby:"
+        puts "\nTrails by Popularity:"
         Trail.sorted_clear
         sorted = Trail.all[0..9]     
         sorted[0..9].each.with_index(1) do |trail, i|
