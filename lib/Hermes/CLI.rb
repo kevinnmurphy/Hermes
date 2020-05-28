@@ -49,11 +49,23 @@ class CLI
                 end
             elsif input == "exit"
                 goodbye
+            elsif input == "new"
+                reset_all
+                get_location
+                list_trails
             else
                 puts "\nNot sure what you want, type list or exit."
             end
         end
     end
+    
+######## RESET ########
+
+def reset_all
+    Location.reset
+    Trail.reset
+    Trail.sorted_clear
+end
 
 ######## LOCATION ########
 
