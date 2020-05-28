@@ -19,12 +19,16 @@ class CLI
     end
 
     def get_list_count
-        puts "How many trail results would you like to see?"
+        puts "\nHow many trail results would you like to see?"
+        puts "Hit Enter for default: 10"
         input = nil
         input = gets.strip.downcase
         input_limit = Trail.sorted.length
         if input.to_i.between?(1, input_limit)
             @@list_count = input.to_i
+        elsif input.empty?
+        elsif input == "exit"
+            exit
         else
             puts "Please try again." 
             get_list_count
@@ -87,13 +91,14 @@ end
 ######## LOCATION ########
 
     def get_location
-        puts "\nTo manually put in your location type \'manual\', or type \'auto\' for auto-magic" 
+        puts "\nTo manually put in your location type \'manual\'."
+        puts  "For auto-magic type \'auto\' or hit Enter"
         input = gets.strip.chomp
         if input == "manual"
             get_manual_input
         elsif input == "exit"
             exit
-        elsif input == "auto"
+        elsif input == "auto" || input.empty?
             auto_location
         else
             puts "\nPlease try again."
@@ -164,7 +169,7 @@ end
     end
 
     def get_zip_input
-        puts "Zipcode please: ex. 12345" 
+        puts "\nZipcode please: ex. 12345" 
         input = gets.chomp
         if validate_zipcode(input)
             return input.to_i
