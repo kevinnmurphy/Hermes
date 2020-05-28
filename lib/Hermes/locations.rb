@@ -1,7 +1,7 @@
 require_relative '../concerns/memorable'
 
 class Location
-    attr_accessor :ip, :auto_latitude, :auto_longitude
+    attr_accessor :ip, :auto_latitude, :auto_longitude, :zip_lat, :zip_lon
     extend Memorable::ClassMethods
     include Memorable::InstanceMethods
 

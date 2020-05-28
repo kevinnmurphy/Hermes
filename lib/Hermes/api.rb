@@ -4,10 +4,6 @@ class API
 
     #ENV[TRAILS_API_KEY]
 
-    def initialize(attributes)
-        attributes.each {|key, value| self.send(("#{key}="), value)}
-    end
-
     def self.get_JSON_from_url(url)
         uri = URI.parse(url)
         response = Net::HTTP.get_response(uri)
@@ -45,9 +41,12 @@ class API
         end
     end
 
+    def self.fetch_zip(zip)
+        url =  "http://api.zippopotam.us/US/#{zip}"
+        hash = get_JSON_from_url(url)
+        array_of_zipdata = hash["places"][0]
+
+        zip_instance = Location.new(zip_lat: array_of_zipdata["latitude"].to_f, zip_lon: array_of_zipdata["longitude"].to_f)
+    end
+
 end
-
-######## TEST INFO ########
-
-#trails = API.new.fetch_trails
-#puts trails

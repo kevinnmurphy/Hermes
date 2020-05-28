@@ -30,7 +30,6 @@ class CLI
             input = gets.strip.downcase
             input_limit = Trail.sorted.length
             #validate
-
             if input.to_i.between?(1, input_limit)
                 display_trail_info(input)
             elsif input == "list"
@@ -62,10 +61,7 @@ class CLI
         puts "\nTo manually put in your location type \'manual\', or type \'auto\' for auto-magic" 
         input = gets.strip.chomp
         if input == "manual"
-            lat = get_lat_input
-            lon = get_lon_input
-            API.fetch_trails(lat, lon)
-            check_data
+            get_manual_input
         elsif input == "exit"
             exit
         elsif input == "auto"
@@ -82,6 +78,25 @@ class CLI
         auto_lon = ip.auto_longitude.truncate(4)
         API.fetch_trails(auto_lat, auto_lon)
         check_data
+    end
+
+    def get_manual_input
+        puts "\nChoose between \'zipcode\' input or \'coordinate\' input: latitude and longitude."
+        input = gets.strip.chomp
+        if input == "zipcode"
+            get_coord_from_zip
+            check_data
+        elsif input == "coordinate"
+            lat = get_lat_input
+            lon = get_lon_input
+            API.fetch_trails(lat, lon)
+            check_data
+        elsif input == "exit"
+            exit
+        else
+            puts "\nPlease try again."
+            get_manual_input
+        end
     end
 
     def check_data
@@ -105,6 +120,33 @@ class CLI
         valid_limit = make_four.to_f.between?(-180, 180)
         valid_ending_count = make_four.to_s.split(".")[1].to_s.length
         coord if valid_beginning_count.between?(1, 4) && valid_limit  && valid_ending_count == 4
+    end
+
+    def validate_zipcode(zip)
+        zip if zip.to_i.to_s.length == 5
+    end
+
+    def get_coord_from_zip
+        input = get_zip_input
+        zip = API.fetch_zip(input)
+        lat = zip.zip_lat
+        lon = zip.zip_lon
+        API.fetch_trails(lat, lon)
+    end
+
+    def get_zip_input
+        puts "Zipcode please: ex. 12345" 
+        input = gets.chomp
+        if validate_zipcode(input)
+            input.to_i
+            return input.to_i
+        elsif input == "exit"
+            exit
+        else
+            puts "Invalid entry, please use this format \'12345\'."
+            #recursion
+            get_zip_input
+        end
     end
 
     def get_lat_input
