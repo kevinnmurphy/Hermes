@@ -4,6 +4,8 @@ class CLI
     @@list_count = 10
 
     def run
+        picture
+        title
         greeting        
         get_location
         get_list_count
@@ -12,6 +14,30 @@ class CLI
 
     def greeting
         puts "\nWelcome to the Trail Runner App!"
+    end
+
+    def title
+        puts '
+        ___________             .__.__    __________                    .__                    _____                 
+        \__    ___/___________  |__|  |   \______   \__ __  ____   ____ |__| ____    ____     /  _  \ ______ ______  
+          |    |  \_  __ \__  \ |  |  |    |       _/  |  \/    \ /    \|  |/    \  / ___\   /  /_\  \\____ \\____ \ 
+          |    |   |  | \// __ \|  |  |__  |    |   \  |  /   |  \   |  \  |   |  \/ /_/  > /    |    \  |_> >  |_> >
+          |____|   |__|  (____  /__|____/  |____|_  /____/|___|  /___|  /__|___|  /\___  /  \____|__  /   __/|   __/ 
+                              \/                  \/           \/     \/        \//_____/           \/|__|   |__|    
+        '
+    end
+
+    def picture
+        puts '    
+                /\
+               /**\
+              /****\   /\
+             /      \ /**\
+            /  /\    /    \        /\    /\  /\      /\            /\/\/\  /\
+           /  /  \  /      \      /  \/\/  \/  \  /\/  \/\  /\  /\/ / /  \/  \
+          /  /    \/ /\     \    /    \ \  /    \/ /   /  \/  \/  \  /    \   \
+         /  /      \/  \/\   \  /      \    /   /    \
+      __/__/_______/___/__\___\__________________________________________________'
     end
 
     def goodbye
@@ -235,11 +261,11 @@ end
 
     def search_by_difficulty
         puts "\nWhich difficulty would you like to search for? (green, blue, black)"
-        difficulty = gets.strip.downcase
-        success = Trail.all_by_difficulty(difficulty).length > 0
+        input = gets.strip.downcase
+        success = Trail.all_by_difficulty(input).length > 0
         if success
-            puts "\nHere are all the trails with difficulty: #{difficulty}"
-            list_by_difficulty(difficulty)
+            puts "\nHere are all the trails with difficulty: #{input}"
+            list_by_difficulty(input)
         elsif input == "exit"
             exit
         else
