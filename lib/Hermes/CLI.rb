@@ -35,7 +35,7 @@ class CLI
             #get input
             input = nil
 
-            list_trails
+            sort_by_popular
         while input != "exit"
 
             puts "\nEnter \'list\' to view nearby trails, or type \'exit\' to leave at any time."
@@ -208,8 +208,10 @@ end
         end
     end 
 
+######## DISPLAY LIST ########
+
     def list_trails(trails = Trail.sorted[0..@@list_count-1])
-        puts "\nTrails:"
+        puts "\n#{Trail.sorted.length}/#{Trail.all.length} Trails:"
         trails.each.with_index(1) {|trail, i| puts "#{i}. #{trail.name} - #{trail.location}"}
     end
 
@@ -245,26 +247,24 @@ end
         puts "Trails by Difficulty:"
         Trail.sorted_clear
         sorted = Trail.all_by_difficulty(dif)
-        sorted[0..@@list_count-1].each.with_index(1) do |trail, i|
-            puts "#{i}. #{trail.name} - #{trail.location}"
-        end
         sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
+        list_trails(sorted[0..@@list_count-1])
     end
 
     def sort_by_param(property)
         puts "Trails by #{property.capitalize}:"
         Trail.sorted_clear
         sorted = Trail.all.sort_by {|k| k.send(property)}
+        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
         list_trails(sorted[0..@@list_count-1])
-        sorted[0..9].each {|trail| Trail.sorted << trail}
     end
 
     def sort_by_popular
         puts "\nTrails by Popularity:"
         Trail.sorted_clear
         sorted = Trail.all     
-        list_trails(sorted[0..@@list_count-1])
         sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
+        list_trails(sorted[0..@@list_count-1])
     end
 
 end
