@@ -2,7 +2,7 @@ class API
     extend Memorable::ClassMethods
     include Memorable::InstanceMethods
 
-    #ENV[TRAILS_API_KEY]
+    #ENV["TRAILS_API_KEY"]
 
     def self.get_JSON_from_url(url)
         uri = URI.parse(url)

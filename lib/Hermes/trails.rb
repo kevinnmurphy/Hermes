@@ -20,10 +20,6 @@ class Trail
         @@sorted
     end
 
-    def self.store
-        @@sorted << self
-    end
-
     def self.sorted_clear
         @@sorted = []
     end

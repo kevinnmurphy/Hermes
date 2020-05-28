@@ -1,10 +1,12 @@
 
 class CLI
 
+    @@list_count = 10
 
     def run
         greeting        
         get_location
+        get_list_count
         menu
     end
 
@@ -16,6 +18,19 @@ class CLI
         puts "Come back for more trail info!"
     end
 
+    def get_list_count
+        puts "How many trail results would you like to see?"
+        input = nil
+        input = gets.strip.downcase
+        input_limit = Trail.sorted.length
+        if input.to_i.between?(1, input_limit)
+            @@list_count = input.to_i
+        else
+            puts "Please try again." 
+            get_list_count
+        end
+    end
+
     def menu
             #get input
             input = nil
@@ -24,13 +39,14 @@ class CLI
         while input != "exit"
 
             puts "\nEnter \'list\' to view nearby trails, or type \'exit\' to leave at any time."
+            puts "Enter \'new\' to start a new search."
             puts "Or enter the trail number you would like to know more about."
             puts "Or type \'refine\' to search trails with filters."
             input = nil
             input = gets.strip.downcase
             input_limit = Trail.sorted.length
             #validate
-            if input.to_i.between?(1, input_limit)
+            if input.to_i.between?(1, @@list_count)
                 display_trail_info(input)
             elsif input == "list"
                 list_trails 
@@ -52,13 +68,14 @@ class CLI
             elsif input == "new"
                 reset_all
                 get_location
+                get_list_count
                 list_trails
             else
                 puts "\nNot sure what you want, type list or exit."
             end
         end
     end
-    
+
 ######## RESET ########
 
 def reset_all
@@ -150,7 +167,6 @@ end
         puts "Zipcode please: ex. 12345" 
         input = gets.chomp
         if validate_zipcode(input)
-            input.to_i
             return input.to_i
         elsif input == "exit"
             exit
@@ -192,12 +208,9 @@ end
         end
     end 
 
-    def list_trails
+    def list_trails(trails = Trail.sorted[0..@@list_count-1])
         puts "\nTrails:"
-        trails = Trail.sorted[0..9]
-        trails.each.with_index(1) do |trail, i|
-        puts "#{i}. #{trail.name} - #{trail.location}"
-        end
+        trails.each.with_index(1) {|trail, i| puts "#{i}. #{trail.name} - #{trail.location}"}
     end
 
     def display_trail_info(input)
@@ -230,40 +243,28 @@ end
 
     def list_by_difficulty(dif)
         puts "Trails by Difficulty:"
-
         Trail.sorted_clear
-
         sorted = Trail.all_by_difficulty(dif)
-        sorted[0..9].each.with_index(1) do |trail, i|
+        sorted[0..@@list_count-1].each.with_index(1) do |trail, i|
             puts "#{i}. #{trail.name} - #{trail.location}"
         end
-        sorted[0..9].each do |trail| Trail.sorted << trail
-        end
+        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
     end
 
     def sort_by_param(property)
         puts "Trails by #{property.capitalize}:"
-
         Trail.sorted_clear
-
         sorted = Trail.all.sort_by {|k| k.send(property)}
-        sorted[0..9].each.with_index(1) do |trail, i|
-        puts "#{i}. #{trail.name} - #{trail.location}"
-        end
-
-        sorted[0..9].each do |trail| Trail.sorted << trail
-        end
+        list_trails(sorted[0..@@list_count-1])
+        sorted[0..9].each {|trail| Trail.sorted << trail}
     end
 
     def sort_by_popular
         puts "\nTrails by Popularity:"
         Trail.sorted_clear
-        sorted = Trail.all[0..9]     
-        sorted[0..9].each.with_index(1) do |trail, i|
-        puts "#{i}. #{trail.name} - #{trail.location}"
-        end
-        sorted[0..9].each do |trail| Trail.sorted << trail
-        end
+        sorted = Trail.all     
+        list_trails(sorted[0..@@list_count-1])
+        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
     end
 
 end
