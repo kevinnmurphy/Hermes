@@ -49,10 +49,11 @@ class CLI
         puts "Hit Enter for default: 10"
         input = nil
         input = gets.strip.downcase
-        input_limit = Trail.sorted.length
+        input_limit = Trail.all.length
         if input.to_i.between?(1, input_limit)
             @@list_count = input.to_i
         elsif input.empty?
+            input = 10
         elsif input == "exit"
             exit
         else
@@ -98,8 +99,9 @@ class CLI
             elsif input == "new"
                 reset_all
                 get_location
+                @@list_count=10
                 get_list_count
-                list_trails
+                sort_by_popular
             else
                 puts "\nNot sure what you want, type list or exit."
             end
@@ -241,7 +243,7 @@ end
 
 ######## DISPLAY LIST ########
 
-    def list_trails(trails = Trail.sorted[0..@@list_count-1])
+    def list_trails(trails = Trail.sorted[0..(@@list_count-1)])
         puts "\n#{Trail.sorted.length}/#{Trail.all.length} Trails:"
         trails.each.with_index(1) {|trail, i| puts "#{i}. #{trail.name} - #{trail.location}"}
     end
@@ -279,7 +281,7 @@ end
         Trail.sorted_clear
         sorted = Trail.all_by_difficulty(dif)
         sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
-        list_trails(sorted[0..@@list_count-1])
+        list_trails(Trail.sorted)
     end
 
     def sort_by_param(property)
@@ -287,7 +289,7 @@ end
         Trail.sorted_clear
         sorted = Trail.all.sort_by {|k| k.send(property)}
         sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
-        list_trails(sorted[0..@@list_count-1])
+        list_trails(Trail.sorted)
     end
 
     def sort_by_popular
@@ -295,7 +297,7 @@ end
         Trail.sorted_clear
         sorted = Trail.all     
         sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
-        list_trails(sorted[0..@@list_count-1])
+        list_trails(Trail.sorted)
     end
 
 end

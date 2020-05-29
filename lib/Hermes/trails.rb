@@ -21,7 +21,7 @@ class Trail
     end
 
     def self.sorted_clear
-        @@sorted = []
+        @@sorted.clear
     end
 
     def self.exists?(index)
@@ -31,12 +31,11 @@ class Trail
     def self.create_by_id(id)
         trail = Trail.new(id)
         trail.save
-        @@sorted << trail
         trail
     end
 
     def self.find_by_id(id)
-        all.find{|trail| trail.id == id}
+        self.all.find{|trail| trail.id == id}
     end
       
     def self.find_or_create_by_id(id)

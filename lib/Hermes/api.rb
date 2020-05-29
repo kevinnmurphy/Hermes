@@ -35,16 +35,17 @@ class API
         hash = get_JSON_from_url(url)
         #binding.pry
         array_of_trails = hash["trails"]
-
-        array_of_trails.each do |trail_hash| 
-            trail_instance = Trail.find_or_create_by_id({id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location"], length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]})
+        if array_of_trails != nil
+            array_of_trails.each do |trail_hash| 
+                trail_instance = Trail.find_or_create_by_id({id: trail_hash["id"], name: trail_hash["name"], location: trail_hash["location"], length: trail_hash["length"], difficulty: trail_hash["difficulty"], ascent: trail_hash["ascent"], descent: trail_hash["descent"], summary: trail_hash["summary"], url: trail_hash["url"]})
+            end
         end
     end
 
     def self.fetch_zip(zip)
         url =  "http://api.zippopotam.us/US/#{zip}"
         hash = get_JSON_from_url(url)
-        array_of_zipdata = hash["places"][0]
+        hash != {} ? array_of_zipdata = hash["places"][0] : array_of_zipdata = hash
 
         zip_instance = Location.new(zip_lat: array_of_zipdata["latitude"].to_f, zip_lon: array_of_zipdata["longitude"].to_f)
     end
