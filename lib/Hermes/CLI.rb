@@ -1,7 +1,6 @@
 
 class CLI
 
-    @@list_count = 10
 
     def run
         picture
@@ -45,13 +44,14 @@ class CLI
     end
 
     def get_list_count
+        @list_count = 10
         puts "\nHow many trail results would you like to see?"
         puts "Hit Enter for default: 10"
         input = nil
         input = gets.strip.downcase
         input_limit = Trail.all.length
         if input.to_i.between?(1, input_limit)
-            @@list_count = input.to_i
+            @list_count = input.to_i
         elsif input.empty?
             input = 10
         elsif input == "exit"
@@ -77,7 +77,7 @@ class CLI
             input = gets.strip.downcase
             input_limit = Trail.sorted.length
             #validate
-            if input.to_i.between?(1, @@list_count)
+            if input.to_i.between?(1, @list_count)
                 display_trail_info(input)
             elsif input == "list"
                 list_trails 
@@ -99,7 +99,7 @@ class CLI
             elsif input == "new"
                 reset_all
                 get_location
-                @@list_count=10
+                @list_count=10
                 get_list_count
                 sort_by_popular
             else
@@ -243,7 +243,7 @@ end
 
 ######## DISPLAY LIST ########
 
-    def list_trails(trails = Trail.sorted[0..(@@list_count-1)])
+    def list_trails(trails = Trail.sorted[0..(@list_count-1)])
         puts "\n#{Trail.sorted.length}/#{Trail.all.length} Trails:"
         trails.each.with_index(1) {|trail, i| puts "#{i}. #{trail.name} - #{trail.location}"}
     end
@@ -280,7 +280,7 @@ end
         puts "Trails by Difficulty:"
         Trail.sorted_clear
         sorted = Trail.all_by_difficulty(dif)
-        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
+        sorted[0..@list_count-1].each {|trail| Trail.sorted << trail}
         list_trails(Trail.sorted)
     end
 
@@ -288,7 +288,7 @@ end
         puts "Trails by #{property.capitalize}:"
         Trail.sorted_clear
         sorted = Trail.all.sort_by {|k| k.send(property)}
-        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
+        sorted[0..@list_count-1].each {|trail| Trail.sorted << trail}
         list_trails(Trail.sorted)
     end
 
@@ -296,7 +296,7 @@ end
         puts "\nTrails by Popularity:"
         Trail.sorted_clear
         sorted = Trail.all     
-        sorted[0..@@list_count-1].each {|trail| Trail.sorted << trail}
+        sorted[0..@list_count-1].each {|trail| Trail.sorted << trail}
         list_trails(Trail.sorted)
     end
 
